@@ -22,11 +22,32 @@ public class PanelSpace extends JPanel {
 		game.lblTiempo.setBounds(500, 20, 100, 15);
 		
 		jugador = new Jugador(game);
+		
+		Thread threadRepaint = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(50);
+					} catch (InterruptedException e) {
+						System.out.println("Could not wait 1 full second");
+					}
+					
+					if (!game.over && !game.paused ) {
+						repaint();
+					}
+				}
+			}
+		});
+		threadRepaint.start();
 	}
 	
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		
 		jugador.drawNaveJugador(g);
+		
 		for (JugadorFuego b : jugador.bullets) {
 			if (b != null) {
 				b.drawBullet(g);
@@ -36,6 +57,12 @@ public class PanelSpace extends JPanel {
 		for (Enemy e : enemies) {
 			if (e != null) {
 				e.drawEnemy(g);
+				
+				if (e instanceof Cazador) {
+					for (CazadorFuego b : ((Cazador) e).bullets)
+						if (b != null) 
+							b.drawBullet(g);
+				}
 			}
 		}
 	}

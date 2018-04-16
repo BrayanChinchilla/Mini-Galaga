@@ -16,6 +16,7 @@ public class MiniGalaga extends JFrame {
 	MyLabel lblTiempo = new MyLabel("Tiempo: "+tiempo);
 	
 	boolean paused = true;
+	boolean over = false;
 		
 	JPanel pnlMain = new JPanel(new BorderLayout());
 	PanelSpace pnlSpace = new PanelSpace(this);

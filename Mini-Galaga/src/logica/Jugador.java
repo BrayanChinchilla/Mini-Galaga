@@ -14,9 +14,13 @@ import myUtilities.SquareImage;
 
 public class Jugador extends SquareImage {
 	
-	Action moveRight;
-	Action moveLeft;
-	Action fire;
+	boolean right, left, shoot = false;
+	
+	Action rightPress;
+	Action rightRelease;
+	Action leftPress;
+	Action leftRelease;
+	Action shootPress;
 	
 	JugadorFuego[] bullets = new JugadorFuego[10];
 	int numBullets = 0;
@@ -25,44 +29,95 @@ public class Jugador extends SquareImage {
 		super("/naveJugador.png", 275, 580, 50, 50);
 		xVelocity = 10;
 		
-		moveRight = new AbstractAction() {
+		rightPress = new AbstractAction() {
 	        public void actionPerformed(ActionEvent e) {
-	        		move(xVelocity, 0, game.pnlSpace);
+	        		right = true;
 	        }
 		};
-		moveRight.setEnabled(false);
+		rightPress.setEnabled(false);
 		
-		moveLeft = new AbstractAction() {
+		rightRelease = new AbstractAction() {
 	        public void actionPerformed(ActionEvent e) {
-	        		move(-xVelocity, 0, game.pnlSpace);
+	        		right = false;
+	        }
+		};
+		rightRelease.setEnabled(false);
+		
+		leftPress = new AbstractAction() {
+	        public void actionPerformed(ActionEvent e) {
+	        		left = true;
 	        }
 		}; 
-		moveLeft.setEnabled(false);
+		leftPress.setEnabled(false);
 		
-		fire = new AbstractAction() {
+		leftRelease = new AbstractAction() {
 	        public void actionPerformed(ActionEvent e) {
-        			System.out.println("Fire GREEN");
-        			bullets[numBullets % 10] = new JugadorFuego(game);
-        			numBullets++;
+	        		left = false;
 	        }
 		};
-		fire.setEnabled(false);
+		leftRelease.setEnabled(false);
 		
-		game.pnlMain.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "moveRight");
-		game.pnlMain.getActionMap().put("moveRight", moveRight);
+		shootPress = new AbstractAction() {
+	        public void actionPerformed(ActionEvent e) {
+        			fire();
+	        }
+		};
+		shootPress.setEnabled(false);
 		
-		game.pnlMain.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "moveLeft");
-		game.pnlMain.getActionMap().put("moveLeft", moveLeft);
+			
+		game.pnlMain.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, false), "rightPress");
+		game.pnlMain.getActionMap().put("rightPress", rightPress);
 		
-		game.pnlMain.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_M, 0), "fire");
-		game.pnlMain.getActionMap().put("fire", fire);
+		game.pnlMain.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, true), "rightRelease");
+		game.pnlMain.getActionMap().put("rightRelease", rightRelease);
+		
+		game.pnlMain.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, false), "leftPress");
+		game.pnlMain.getActionMap().put("leftPress", leftPress);
+		
+		game.pnlMain.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, true), "leftRelease");
+		game.pnlMain.getActionMap().put("leftRelease", leftRelease);
+		
+		game.pnlMain.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_M, 0, false), "shootPress");
+		game.pnlMain.getActionMap().put("shootPress", shootPress);
+		
+		/*
+		 * Mantiene el movimiento de la nave independiente de su artilleria
+		 */
+		Thread threadListenKeys = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(true) {
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					if (right) {
+						move(xVelocity, 0);
+					}
+					if (left) {
+						move(-xVelocity, 0);
+					}
+				}
+			}
+			
+		});
+		threadListenKeys.start();
 									
 	}
+	
 
+	public void fire() {
+		bullets[numBullets % 10] = new JugadorFuego(this);
+		numBullets++;
+	}
+	
 	public void enableActions(boolean flag) {
-		moveRight.setEnabled(flag);
-		moveLeft.setEnabled(flag);
-		fire.setEnabled(flag);	
+		rightPress.setEnabled(flag);
+		rightRelease.setEnabled(flag);
+		leftPress.setEnabled(flag);
+		leftRelease.setEnabled(flag);
+		shootPress.setEnabled(flag);	
 	}
 	
 	public void drawNaveJugador(Graphics g) {

@@ -21,7 +21,7 @@ public class Arcaico extends Enemy{
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					move(0, yVelocity, game.pnlSpace);
+					move(0, yVelocity);
 				}	
 			}
 		});

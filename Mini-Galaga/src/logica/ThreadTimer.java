@@ -12,17 +12,16 @@ public class ThreadTimer implements Runnable {
 	public void run() {
 		while (true) {
 			try {
-				Thread.sleep(1200);
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				System.out.println("Could not wait 1 full second");
 			}
 			
-			if (game.tiempo > 0 && !game.paused ) {
+			if (!game.over && !game.paused ) {
 					game.tiempo--;			
 					game.lblTiempo.setText("Tiempo: "+game.tiempo);
-			}
-			else if (game.tiempo <= 0) {
-				//Time is over
+					if(game.tiempo <= 0)
+						game.over = true;
 			}
 		}
 	}

@@ -15,7 +15,6 @@ public class ThreadGenerateEnemies implements Runnable {
 		int numEnemies = 0;
 		while (true) {
 			int offset = ThreadLocalRandom.current().nextInt(1, 4);
-			System.out.println("Offset: "+offset);
 			try {
 				Thread.sleep(offset * 1000);
 			} catch (InterruptedException e) {
@@ -25,7 +24,6 @@ public class ThreadGenerateEnemies implements Runnable {
 			int type = ThreadLocalRandom.current().nextInt(0, 3);
 			int xPosition = ThreadLocalRandom.current().nextInt(0, 550);
 			
-			System.out.println("Type: "+type +"xPosition: "+xPosition);
 			if (game.tiempo > 0 && !game.paused ) {
 				switch (type) {
 				case 0:

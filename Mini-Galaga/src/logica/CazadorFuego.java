@@ -4,24 +4,24 @@ import java.awt.Graphics;
 
 import myUtilities.SquareImage;
 
-public class JugadorFuego extends SquareImage {
+public class CazadorFuego extends SquareImage {
 	
 	Thread threadFire;
 		
-	public JugadorFuego(Jugador jugador) {
-		super("/fuegoJugador.png", jugador.xPosition + 10, jugador.yPosition-50+20, 30, 30);
-		yVelocity = 20;
+	public CazadorFuego(Cazador cazador) {
+		super("/fuegoEnemigo.png", cazador.xPosition + 22, cazador.yPosition+50, 6, 30);
+		yVelocity = 15;
 		
 		threadFire = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while (yPosition > 0 - imgHeight) {
+				while (yPosition < 650) {
 					try {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					move(0, -yVelocity);
+					move(0, yVelocity);
 				}
 				
 			}

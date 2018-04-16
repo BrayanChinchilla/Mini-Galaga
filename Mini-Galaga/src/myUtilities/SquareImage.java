@@ -33,10 +33,9 @@ public class SquareImage {
 		rectangle = new Rectangle(x, y, imgWidth, imgHeight);
 	}
 	
-	public void move(int xIncrement, int yIncrement, PanelSpace pnlSpace) {
+	public void move(int xIncrement, int yIncrement) {
 		xPosition = xPosition + xIncrement;
 		yPosition = yPosition + yIncrement;
 		rectangle.setBounds(xPosition, yPosition, imgWidth, imgHeight);
-		pnlSpace.repaint();
 	}
 }

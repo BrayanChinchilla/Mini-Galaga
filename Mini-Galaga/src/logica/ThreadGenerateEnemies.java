@@ -4,16 +4,16 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ThreadGenerateEnemies implements Runnable {
 
-	MiniGalaga game;
+	Game game;
 	
-	public ThreadGenerateEnemies (MiniGalaga game) {
+	public ThreadGenerateEnemies (Game game) {
 		this.game = game;
 	}
 	
 	@Override
 	public void run() {
 		int numEnemies = 0;
-		while (true) {
+		while (!game.over) {
 			int offset = ThreadLocalRandom.current().nextInt(1, 4);
 			try {
 				Thread.sleep(offset * 1000);
@@ -21,19 +21,19 @@ public class ThreadGenerateEnemies implements Runnable {
 				System.out.println("Could not wait 1 full second");
 			}
 			
-			int type = ThreadLocalRandom.current().nextInt(0, 3);
-			int xPosition = ThreadLocalRandom.current().nextInt(0, 550);
-			
-			if (game.tiempo > 0 && !game.paused ) {
+			if (!game.paused) {
+				int type = ThreadLocalRandom.current().nextInt(0, 3);
+				int xPosition = ThreadLocalRandom.current().nextInt(0, 550);
+				
 				switch (type) {
 				case 0:
-					game.pnlSpace.enemies[numEnemies % 10] = new Arcaico(game, xPosition);
+					game.enemies[numEnemies % 10] = new Arcaico(game, xPosition);
 					break;
 				case 1:
-					game.pnlSpace.enemies[numEnemies % 10] = new Cazador(game, xPosition);
+					game.enemies[numEnemies % 10] = new Cazador(game, xPosition);
 					break;
 				case 2:
-					game.pnlSpace.enemies[numEnemies % 10] = new Caotica(game, xPosition);
+					game.enemies[numEnemies % 10] = new Caotica(game, xPosition);
 					break;
 				}
 				numEnemies++;

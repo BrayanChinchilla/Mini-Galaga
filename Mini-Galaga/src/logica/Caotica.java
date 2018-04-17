@@ -2,26 +2,31 @@ package logica;
 
 import java.awt.Graphics;
 
-import myUtilities.SquareImage;
+import myUtilities.RectangleImage;
 
 public class Caotica extends Enemy{
 	
 	Thread threadCaotica;
 
-	public Caotica(MiniGalaga game, int randomX) {
+	public Caotica(Game game, int randomX) {
 		super("/caotica.png", randomX, 0, 50, 50);
-		yVelocity = 12;
+		vidaRestante = 1;
 		
 		threadCaotica = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while (yPosition < 650) {
+				while (y < 650) {
 					try {
-						Thread.sleep(100);
+						Thread.sleep(39);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					move(0, yVelocity);
+					
+					if(!game.paused)
+						moveDown();
+					
+					if (checkForCollision(game)) {
+					}
 				}	
 			}
 		});

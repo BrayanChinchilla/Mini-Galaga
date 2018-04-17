@@ -2,26 +2,28 @@ package logica;
 
 public class ThreadTimer implements Runnable {
 
-	MiniGalaga game;
+	Game game;
 	
-	public ThreadTimer(MiniGalaga game) {
+	public ThreadTimer(Game game) {
 		this.game = game;
 	}
 	
 	@Override
 	public void run() {
-		while (true) {
+		while (!game.over) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				System.out.println("Could not wait 1 full second");
 			}
 			
-			if (!game.over && !game.paused ) {
-					game.tiempo--;			
-					game.lblTiempo.setText("Tiempo: "+game.tiempo);
-					if(game.tiempo <= 0)
-						game.over = true;
+			if (!game.paused) {
+				game.tiempo--;			
+				game.lblTiempo.setText("Tiempo: "+game.tiempo);
+				
+				if(game.tiempo <= 0) {
+					game.gameOver();
+				}
 			}
 		}
 	}

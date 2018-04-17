@@ -2,29 +2,38 @@ package logica;
 
 import java.awt.Graphics;
 
-import myUtilities.SquareImage;
+import myUtilities.RectangleImage;
 
 public class Cazador extends Enemy{
 	
+	Game game;
 	Thread threadCazador;
 	
-	CazadorFuego[] bullets = new CazadorFuego[10];
+	CazadorFire[] fire = new CazadorFire[5];
 	int numBullets = 0;
 
-	public Cazador(MiniGalaga game, int randomX) {
+	public Cazador(Game game, int randomX) {
 		super("/cazador.png", randomX, 0, 50, 50);
-		yVelocity = 9;
+		this.game = game;
+		vidaRestante = 2;
 		
 		threadCazador = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while (yPosition < 650) {
+				while (y < 650 && vidaRestante > 0) {
 					try {
-						Thread.sleep(100);
+						Thread.sleep(54);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					move(0, yVelocity);
+					if (!game.paused)
+						moveDown();
+					
+					if (checkForCollision(game)) {
+						vidaRestante--;
+						if (vidaRestante == 0)
+							game.jugador.cazadorKilled();
+					}
 				}	
 			}
 		});
@@ -33,13 +42,19 @@ public class Cazador extends Enemy{
 		Thread threadFire = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while(yPosition < 650) {
+				try {
+					Thread.sleep(150);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				while(y < 650 && vidaRestante > 0) {
+					if (!game.paused)
+						fire();
 					try {
 						Thread.sleep(2000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					fire();
 				}
 			}
 		});
@@ -48,8 +63,7 @@ public class Cazador extends Enemy{
 	}
 	
 	public void fire() {
-		System.out.println("Enemy fire!");
-		bullets[numBullets % 10] = new CazadorFuego(this);
+		fire[numBullets % 10] = new CazadorFire(this, game);
 		numBullets++;
 	}
 

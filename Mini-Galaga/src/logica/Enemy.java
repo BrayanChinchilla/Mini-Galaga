@@ -2,9 +2,9 @@ package logica;
 
 import java.awt.Graphics;
 
-import myUtilities.SquareImage;
+import myUtilities.RectangleImage;
 
-public class Enemy extends SquareImage {
+public class Enemy extends RectangleImage {
 	
 	int vidaRestante;
 	int puntos;
@@ -14,7 +14,19 @@ public class Enemy extends SquareImage {
 	}
 	
 	public void drawEnemy(Graphics g) {
-		g.drawImage(img, xPosition, yPosition, imgWidth, imgHeight, null);
+		g.drawImage(img, x, y, width, height, null);
+	}
+	
+	public boolean checkForCollision(Game game) {
+		for (FalconFire b : game.falcon.fire) {
+			if (b != null ) {
+				if (intersects(b)) {
+					b.destroyBullet();
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }

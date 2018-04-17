@@ -2,27 +2,41 @@ package logica;
 
 import java.awt.Graphics;
 
-import myUtilities.SquareImage;
+import myUtilities.*;
 
 public class Arcaico extends Enemy{
 	
 	Thread threadArcaico;
 
-	public Arcaico(MiniGalaga game, int randomX) {
+	/**
+	 * Crea una nave arcaica y la independiza en su propia thread
+	 * @param game
+	 * @param randomX coordenada X en donde aparecera la nave
+	 */
+	public Arcaico(Game game, int randomX) {
 		super("/arcaico.png", randomX, 0, 50, 50);
-		yVelocity = 6;
+		vidaRestante = 3;
 		
 		threadArcaico = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while (yPosition < 650) {
+				while (y < 650 && vidaRestante > 0) {
 					try {
-						Thread.sleep(100);
+						Thread.sleep(77);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					move(0, yVelocity);
-				}	
+					
+					if(!game.paused)
+						moveDown();
+					
+					if (checkForCollision(game)) {
+						vidaRestante--;
+						if (vidaRestante == 0)
+							game.jugador.arcaicoKilled();
+					}	
+				}
+				
 			}
 		});
 		threadArcaico.start();

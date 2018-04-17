@@ -15,7 +15,7 @@ public class PanelMenuBar extends JPanel {
 	MyButton btnReanudar = new MyButton("Reanudar");
 	MyButton btnTop3 = new MyButton("Top 3");
 
-	public PanelMenuBar(MiniGalaga game) {
+	public PanelMenuBar(MiniGalaga app) {
 		super(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		add(btnJuegoNuevo);
 		add(btnPausar);
@@ -24,24 +24,25 @@ public class PanelMenuBar extends JPanel {
 		
 		btnJuegoNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				game.newGame();
+				app.game.newGame();
 			}
 		});
 		
 		btnPausar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				game.pauseGame();
+				app.game.pauseGame();
 			}
 		});
 		
 		btnReanudar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				game.resumeGame();
+				app.game.resumeGame();
 			}
 		});
 		
 		btnTop3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				app.displayTop3();
 			}
 		});
 	}

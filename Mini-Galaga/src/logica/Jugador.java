@@ -6,7 +6,10 @@ public class Jugador {
 	int puntos;
 	
 	public Jugador(String name) {
-		this.name = name;
+		if (name.equals(""))
+			this.name = " -----";
+		else
+			this.name = name;
 		this.puntos = 0;
 	}
 	
@@ -16,5 +19,9 @@ public class Jugador {
 	
 	public void cazadorKilled() {
 		puntos += 20;
+	}
+	
+	public void caoticaKilled() {
+		puntos += 30;
 	}
 }

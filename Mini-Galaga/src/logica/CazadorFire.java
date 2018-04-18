@@ -4,16 +4,20 @@ import java.awt.Graphics;
 
 import myUtilities.RectangleImage;
 
+/*
+ * Crea una bala para el Cazador
+ * y la independiza en su propia thread para que se mueva
+ */
 public class CazadorFire extends RectangleImage {
 	
-	boolean draw = true;
+	boolean active = true;
 	
 	Thread threadFire;
 		
 	public CazadorFire(Cazador cazador, Game game) {
 		super("/fuegoEnemigo.png", cazador.x + 22, cazador.y+50, 6, 30);
 		
-		threadFire = new Thread(new Runnable() {
+		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				while (y < 650) {
@@ -24,19 +28,26 @@ public class CazadorFire extends RectangleImage {
 					}
 					if (!game.paused)
 						moveDown();
+					if (!game.running)
+						destroyBullet();
 				}
 				
 			}
-		});
-		threadFire.start();
+		}).start();
 	}
-
+	
+	/**
+	 * Provoca que la thread pare y la bala desaparece de la pantalla
+	 */
+	public void destroyBullet() {
+		active = false;
+		y = 750;
+	}
+	
+	
 	public void drawBullet(Graphics g) {
 		g.drawImage(img, x, y, width, height, null);
 	}
 	
-	public void destroyBullet() {
-		draw = false;
-		x = 750;
-	}
+
 }

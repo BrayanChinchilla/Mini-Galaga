@@ -6,8 +6,6 @@ import myUtilities.*;
 
 public class Arcaico extends Enemy{
 	
-	Thread threadArcaico;
-
 	/**
 	 * Crea una nave arcaica y la independiza en su propia thread
 	 * @param game
@@ -17,7 +15,7 @@ public class Arcaico extends Enemy{
 		super("/arcaico.png", randomX, 0, 50, 50);
 		vidaRestante = 3;
 		
-		threadArcaico = new Thread(new Runnable() {
+		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				while (y < 650 && vidaRestante > 0) {
@@ -30,16 +28,27 @@ public class Arcaico extends Enemy{
 					if(!game.paused)
 						moveDown();
 					
-					if (checkForCollision(game)) {
+					switch(checkForCollision(game)) {
+					case ("/fuegoJugador.png"):
 						vidaRestante--;
-						if (vidaRestante == 0)
-							game.jugador.arcaicoKilled();
-					}	
+						if (vidaRestante == 0) {
+							destroyMyself();
+							game.jugador.cazadorKilled();
+						}
+						break;
+					case ("/fuegoJugadorSpecial.png"):
+						vidaRestante = 0;
+						destroyMyself();
+						game.jugador.cazadorKilled();
+						break;
+					}
+					
+					if (!game.running)
+						destroyMyself();
 				}
 				
 			}
-		});
-		threadArcaico.start();
+		}).start();
 
 	}
 

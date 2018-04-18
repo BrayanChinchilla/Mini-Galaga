@@ -7,17 +7,21 @@ import myUtilities.RectangleImage;
 public class Cazador extends Enemy{
 	
 	Game game;
-	Thread threadCazador;
 	
 	CazadorFire[] fire = new CazadorFire[5];
 	int numBullets = 0;
 
+	/**
+	 * Crea una nave cazador y la independiza en su propia thread
+	 * @param game
+	 * @param randomX coordenada X en donde aparecera la nave
+	 */
 	public Cazador(Game game, int randomX) {
 		super("/cazador.png", randomX, 0, 50, 50);
 		this.game = game;
 		vidaRestante = 2;
 		
-		threadCazador = new Thread(new Runnable() {
+		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				while (y < 650 && vidaRestante > 0) {
@@ -29,17 +33,28 @@ public class Cazador extends Enemy{
 					if (!game.paused)
 						moveDown();
 					
-					if (checkForCollision(game)) {
+					switch(checkForCollision(game)) {
+					case ("/fuegoJugador.png"):
 						vidaRestante--;
-						if (vidaRestante == 0)
+						if (vidaRestante == 0) {
+							destroyMyself();
 							game.jugador.cazadorKilled();
+						}
+						break;
+					case ("/fuegoJugadorSpecial.png"):
+						vidaRestante = 0;
+						destroyMyself();
+						game.jugador.cazadorKilled();
+						break;
 					}
+
+					if (!game.running)
+						destroyMyself();
 				}	
 			}
-		});
-		threadCazador.start();
+		}).start();
 		
-		Thread threadFire = new Thread(new Runnable() {
+		new Thread (new Runnable() {
 			@Override
 			public void run() {
 				try {
@@ -57,13 +72,12 @@ public class Cazador extends Enemy{
 					}
 				}
 			}
-		});
-		threadFire.start();
+		}).start();
 
 	}
 	
 	public void fire() {
-		fire[numBullets % 10] = new CazadorFire(this, game);
+		fire[numBullets % 5] = new CazadorFire(this, game);
 		numBullets++;
 	}
 
